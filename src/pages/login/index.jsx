@@ -3,17 +3,57 @@
 */
 
 import React, { Component } from 'react'
+
 import './login.less'
 import logo from '../../assets/imgs/logo.svg'
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import {
-  HomeOutlined,KeyOutlined
+  UserOutlined, LockOutlined
 } from '@ant-design/icons';
 
-const Item = Form.Item
+// import { reqLogin } from '../../api'
+import {setUser,removeUser} from '../../utils/memoryUtils'
 
+const Item = Form.Item
+// const onFinish = async({ username, password }) => {
+//   //发送请求
+//   const res = await reqLogin(username, password)
+//   if (res.status === 0) {
+//     // 成功跳转页面,保存user数据
+//     message('登陆成功！')
+//     this.props.history.replace('/')
+//     setUser(res.user)
+//   } else {
+//     message(`登陆失败,${res.msg}`)
+//   }
+// };
+function onFinish(values){
+  values._id = 'react10079'
+  setUser(values)
+  this.props.history.replace('/')
+}
+const onFinishFailed = (errorInfo) => {
+  console.log('Failed:', errorInfo);
+};
+
+const validateMessages = {
+  required: "'${username}' 是必选字段",
+};
+
+const login_rule = (_, value) => {
+  if (!value) {
+    return Promise.reject('请填写用户名')
+  } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+    return Promise.reject('用户名是英文、数字或下划线组成')
+  } else {
+    return Promise.resolve()
+  }
+};
 export default class Login extends Component {
   render() {
+    //进入登陆页面清楚用户数据 
+    removeUser()
+
     return (
       <div className='login'>
         <header className='header'>
@@ -27,30 +67,30 @@ export default class Login extends Component {
           <h2 >登陆</h2>
           <div className='form'>
             <Form
-              name="basic"
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              name="form_login"
               style={{ maxWidth: 600 }}
-              // onFinish={onFinish}
-              // onFinishFailed={onFinishFailed}
+              onFinish={onFinish.bind(this)}
+              onFinishFailed={onFinishFailed}
               autoComplete="off"
+              validateTrigger="onBlur"
+              validateMessages={validateMessages}
             >
               <Item
                 name="username"
-                // rules={[{ required: true, message: 'Please input your username!' }]}
+                rules={[{ validator: login_rule }]}
               >
-                <Input prefix={<HomeOutlined />}/>
+                <Input prefix={<UserOutlined />} />
               </Item>
 
               <Item
                 name="password"
-                // rules={[{ required: true, message: 'Please input your password!' }]}
+                rules={[{ validator: login_rule }]}
               >
-                <Input.Password prefix={<KeyOutlined />}/>
+                <Input.Password prefix={<LockOutlined />} />
               </Item>
 
-              <Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
+              <Item wrapperCol={{ span: 24 }}>
+                <Button type="primary" htmlType="submit" block>
                   登陆
                 </Button>
               </Item>

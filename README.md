@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# React+antD实战项目
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React项目实战，模拟后台管理系统
 
-## Available Scripts
+## 项目的基本结构
 
-In the project directory, you can run:
+api: ajax请求的模块
+components: 非路由组件
+pages: 路由组件
+App.js: 应用的根组件
+index.js: 入口js
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## antd
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 按需打包
+- 自定义主题 未实现
+- 使用antd的组件
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 路由
 
-### `npm run build`
+- 下载包: react-router-dom
+拆分应用路由:
+  Login: 登陆
+  Admin: 后台管理界面
+注册路由:
+  `<BrowserRouter>
+  <Switch>
+  <Route path='' component={}/>`
+ 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## axios
+1). ajax请求函数模块: api/ajax.js
+    封装axios + Promise
+    函数的返回值是promise对象  ===> 后面用上async/await
+    自己创建Promise
+      1. 内部统一处理请求异常: 外部的调用都不用使用try..catch来处理请求异常
+      2. 异步返回是响应数据(而不是响应对象): 外部的调用异步得到的就直接是数据了(response --> response.data)
+2). 接口请求函数模块: api/index.js
+    接口请求函数: 使用ajax(), 返回值promise对象
+3). 解决ajax跨域请求问题(开发时)
+    办法: 配置代理  ==> 只能解决开发环境
+    编码: package.json: proxy: "http://localhost:5000"
+4). 对代理的理解
+    1). 是什么?
+        具有特定功能的程序
+    2). 运行在哪?
+        前台应用端
+        只能在开发时使用
+    3). 作用?
+        解决开发时的ajax请求跨域问题
+        a. 监视并拦截请求(3000)
+        b. 转发请求(4000)
+    4). 配置代理
+        告诉代理服务器一些信息: 比如转发的目标地址
+        开发环境: 前端工程师
+        生产环境: 后端工程师
+## 登陆模块
+1）登陆表单验证
+2）存储缓存用户数据(localStorage)
+3）实现免登陆
+    ** 在login页面清除用户数据时，写在了render函数外部，使得函数在全局作用域下导致其他页面刷新被清除用户
+    ** onfinsh函数写在render外部需要bind(this)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Component与PureComponent
+    1). Component存在的问题?
+        a. 父组件重新render(), 当前组件也会重新执行render(), 即使没有任何变化
+        b. 当前组件setState(), 重新执行render(), 即使state没有任何变化
+  
+    2). 解决Component存在的问题
+        a. 原因: 组件的shouldcomponentUpdate()默认返回true, 即使数据没有变化render()都会重新执行
+        b. 办法1: 重写shouldComponentUpdate(), 判断如果数据有变化返回true, 否则返回false
+        c. 办法2: 使用PureComponent代替Component
+        d. 说明: 一般都使用PureComponent来优化组件性能
+  
+    3). PureComponent的基本原理
+        a. 重写实现shouldComponentUpdate()
+        b. 对组件的新/旧state和props中的数据进行浅比较, 如果都没有变化, 返回false, 否则返回true
+        c. 一旦componentShouldUpdate()返回false不再执行用于更新的render()
+  
+    4). 面试题:
+        组件的哪个生命周期勾子能实现组件优化?
+        PureComponent的原理?
+        区别Component与PureComponent?
