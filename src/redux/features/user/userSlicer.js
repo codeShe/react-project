@@ -6,13 +6,14 @@ export const userSlice = createSlice({
     value: {}
   },
   reducers: {
-    setUser: (action,state) => {
+    setUser: (state,action) => {
       // console.log(state, action,'dispath_setUser')
-      return state
+      return action.payload
     }
   },
 })
 
 export const { setUser } = userSlice.actions
+
 export default userSlice.reducer
 

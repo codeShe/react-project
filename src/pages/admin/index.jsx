@@ -39,9 +39,14 @@ const footerStyle = {
   color: '#fff',
   backgroundColor: '#7dbcea',
 };
-
+// console.log(this.store,'111')
 class Admin extends Component {
+  constructor(){
+    super()
+    console.log(this,'222')
+  }
   render() {
+    
     //如果内存中没有用户信息则重新登陆
     const user = this.props.user;
     // const dispath = useDispatch();
@@ -68,7 +73,7 @@ class Admin extends Component {
 }
 const mapStateToProps = (state,ownProps) => {
   return {
-      user: state.user.payload
+      user: state.user
   }
  }
 const mapDispatchToProps = {
