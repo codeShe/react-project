@@ -7,7 +7,6 @@ const USER_KEY = 'user_key'
 
 export const getUser = () => {
   user =  JSON.parse(localStorage.getItem(USER_KEY))||{}
-  console.log(localStorage.getItem(USER_KEY))
 }
 
 export const setUser = ({username,_id}) => {

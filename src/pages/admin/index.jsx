@@ -3,10 +3,12 @@
 */
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom/cjs/react-router-dom'
+// import {useSelector, useDispatch} from 'react-redux'  //钩子只能用在函数组件中
+import {connect} from 'react-redux'
 
 import {Layout} from 'antd'
 
-import {user} from '../../utils/memoryUtils'
+// import {user} from '../../utils/memoryUtils'
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -38,10 +40,14 @@ const footerStyle = {
   backgroundColor: '#7dbcea',
 };
 
-export default class Admin extends Component {
+class Admin extends Component {
   render() {
     //如果内存中没有用户信息则重新登陆
-    if(!user || !user._id || !user.username){
+    const user = this.props.user;
+    // const dispath = useDispatch();
+    // const {user} = useSelector(state =>{
+    // })
+    if(!user || !user.password || !user.username){
       //清楚用户数据，重新登陆
       return <Redirect to="/login" />
     }
@@ -60,3 +66,13 @@ export default class Admin extends Component {
     )
   }
 }
+const mapStateToProps = (state,ownProps) => {
+  return {
+      user: state.user.payload
+  }
+ }
+const mapDispatchToProps = {
+  // ... normally is an object full of action creators
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Admin)

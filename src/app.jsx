@@ -10,7 +10,7 @@ import Login from "./pages/login";
 export default class App extends Component {
   render(){
     //读取locals内的值保存到内存中
-    getUser();
+    // getUser();
     return(
       <BrowserRouter>
         <Route path="/login" component={Login}/>
